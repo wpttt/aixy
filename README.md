@@ -74,24 +74,10 @@ cd aixy
 
 ### 2. 创建配置文件
 
-创建 `apps-config.json` 文件，内容示例：
+复制环境变量配置文件：
 
-```json
-{
-  "dify": {
-    "baseUrl": "http://localhost/v1",
-    "siteTitle": "AI 导航中心",
-    "siteLogo": "",
-    "apiKey": ""
-  },
-  "home": {
-    "title": "你的专属智能助手中枢",
-    "subtitle": "由 Dify 驱动，汇聚多个领域智能助手，一站式访问，开箱即用",
-    "tag": "AI Hub",
-    "tagLink": ""
-  },
-  "apps": []
-}
+```bash
+cp .env.example .env
 ```
 
 ### 3. 启动容器
