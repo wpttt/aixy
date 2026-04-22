@@ -43,6 +43,7 @@ data/
 
 # Claude Code settings
 .claude/
+.claude/settings.local.json
 
 # User data
 apps-config.json
