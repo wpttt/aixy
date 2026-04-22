@@ -10,23 +10,38 @@
 - **亮暗主题切换** - 支持亮色和暗色主题，偏好保存在浏览器本地
 - **可视化配置** - 无需修改代码，通过管理页面即可配置所有内容
 
-## 快速开始
+---
 
-### 1. 安装依赖
+## 本地部署
+
+### 1. 克隆代码
+
+```bash
+git clone https://github.com/wpttt/aixy.git
+cd aixy
+```
+
+### 2. 安装依赖
 
 ```bash
 npm install
 ```
 
-### 2. 配置环境变量
-
-复制 `.env.example` 为 `.env` 并修改配置：
+### 3. 配置环境变量
 
 ```bash
 cp .env.example .env
 ```
 
-### 3. 启动开发服务器
+编辑 `.env` 文件，修改配置：
+
+```env
+NEXT_PUBLIC_ADMIN_PASSWORD=你的密码
+RAG_BASE_URL=http://localhost/v1
+RAG_API_KEY=你的API密钥
+```
+
+### 4. 启动开发服务器
 
 ```bash
 npm run dev
@@ -34,34 +49,102 @@ npm run dev
 
 打开 [http://localhost:3000](http://localhost:3000) 查看页面。
 
-### 4. 访问配置管理
+### 5. 生产环境构建
 
-点击页面右上角「配置管理」按钮，输入密码（默认：`123456`）进入配置页面。
+```bash
+npm run build
+npm start
+```
 
-## 配置说明
+---
 
-### 环境变量 (.env)
+## Docker 部署
+
+### 前置要求
+
+- Docker Desktop 已安装并运行
+- Docker Compose 已安装
+
+### 1. 克隆代码
+
+```bash
+git clone https://github.com/wpttt/aixy.git
+cd aixy
+```
+
+### 2. 创建配置文件
+
+创建 `apps-config.json` 文件，内容示例：
+
+```json
+{
+  "dify": {
+    "baseUrl": "http://localhost/v1",
+    "siteTitle": "AI 导航中心",
+    "siteLogo": "",
+    "apiKey": ""
+  },
+  "home": {
+    "title": "你的专属智能助手中枢",
+    "subtitle": "由 Dify 驱动，汇聚多个领域智能助手，一站式访问，开箱即用",
+    "tag": "AI Hub",
+    "tagLink": ""
+  },
+  "apps": []
+}
+```
+
+### 3. 启动容器
+
+```bash
+docker-compose up -d --build
+```
+
+### 4. 访问应用
+
+部署成功后访问 `http://localhost:3000`
+
+### 常用命令
+
+```bash
+# 查看运行状态
+docker-compose ps
+
+# 查看日志
+docker-compose logs -f
+
+# 停止服务
+docker-compose down
+
+# 更新代码后重新部署
+docker-compose up -d --build
+
+# 完全重建
+docker-compose down -v
+docker-compose up -d --build
+```
+
+### 数据持久化
+
+部署后通过页面上传的内容挂载在以下目录：
+
+| 路径 | 说明 |
+|------|------|
+| `./apps-config.json` | 应用配置文件 |
+| `./public/logos` | 上传的 Logo 文件 |
+
+### 环境变量
 
 | 变量 | 说明 | 默认值 |
 |------|------|--------|
 | `NEXT_PUBLIC_ADMIN_PASSWORD` | 配置管理页面访问密码 | `123456` |
-| `RAG_BASE_URL` | RAG API 服务地址 | `http://localhost/v1` |
-| `RAG_API_KEY` | RAG API 密钥 | - |
+| `NODE_ENV` | 运行环境 | `production` |
 
-### 首页内容配置（配置管理页面）
+### 配置管理
 
-- **首页大标题** - 首页中央醒目文字
-- **首页副标题** - 大标题下方的描述
-- **首页标签** - 顶部小标签文字
+访问 `http://localhost:3000/admin`，输入密码（默认：`123456`）进入配置页面。
 
-### 卡片配置（配置管理页面）
-
-- **显示名称** - 卡片上显示的应用名称
-- **图标 Emoji** - 卡片左上角的图标
-- **链接地址** - 点击卡片跳转的目标 URL
-- **链接类型** - 卡片类型标签（对话型/Agent/工作流/文本生成/链接）
-- **应用简介** - 卡片的描述文字
-- **标签** - 自定义标签，逗号分隔
+---
 
 ## 项目结构
 
@@ -88,55 +171,6 @@ public/
 └── logos/              # 上传的 Logo 存放目录
 ```
 
-## 构建生产版本
-
-```bash
-npm run build
-npm start
-```
-
-## Docker 部署
-
-### 使用 Docker Compose（推荐）
-
-```bash
-# 构建并启动
-docker-compose up -d
-
-# 查看日志
-docker-compose logs -f
-
-# 停止
-docker-compose down
-```
-
-### 使用 Docker 命令
-
-```bash
-# 构建镜像
-docker build -t aiac .
-
-# 运行容器
-docker run -d -p 3000:3000 \
-  -e NEXT_PUBLIC_ADMIN_PASSWORD=123456 \
-  -v ./apps-config.json:/app/data/apps-config.json:ro \
-  -v ./public/logos:/app/public/logos \
-  --name aiac \
-  aiac
-```
-
-### Docker 环境变量
-
-| 变量 | 说明 | 默认值 |
-|------|------|--------|
-| `NEXT_PUBLIC_ADMIN_PASSWORD` | 配置管理页面访问密码 | `123456` |
-| `NODE_ENV` | 运行环境 | `production` |
-
-### 数据持久化
-
-- `apps-config.json` - 应用配置文件，建议挂载为只读
-- `public/logos/` - 上传的 Logo 文件目录，需要持久化
-
 ## 技术栈
 
 - **框架**: Next.js 16
@@ -148,4 +182,4 @@ docker run -d -p 3000:3000 \
 
 - 主题偏好保存在浏览器的 `localStorage` 中，不同用户看到的主题互相独立
 - 卡片必须配置「链接地址」才能点击跳转，否则会提示「此应用尚在开发中」
-- 上传的 Logo 保存在 `public/logos/` 目录，请确保该目录可写
+- 上传的 Logo 保存在 `public/logos/` 目录
