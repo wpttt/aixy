@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { AppsConfig, DifyApp } from '@/types';
 import { cn } from '@/lib/utils';
 
-const ADMIN_PASSWORD = process.env.NEXT_PUBLIC_ADMIN_PASSWORD || '123456';
-
 const TYPE_BADGES: Record<string, { class: string; label: string }> = {
   chat: { class: 'bg-[rgba(88,166,255,0.15)] text-[#58a6ff] border-[rgba(88,166,255,0.25)]', label: '对话型' },
   agent: { class: 'bg-[rgba(63,185,80,0.15)] text-[#3fb950] border-[rgba(63,185,80,0.25)]', label: 'Agent' },
@@ -66,12 +64,28 @@ export default function AdminPage() {
     }
   }, [isAuthenticated]);
 
-  const handleLogin = () => {
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      sessionStorage.setItem('admin-auth', 'true');
-    } else {
-      showMessage('error', '密码错误');
+  const handleLogin = async () => {
+    if (!password) {
+      showMessage('error', '请输入密码');
+      return;
+    }
+
+    try {
+      const res = await fetch('/api/auth', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
+      });
+
+      if (res.ok) {
+        setIsAuthenticated(true);
+        sessionStorage.setItem('admin-auth', 'true');
+      } else {
+        const data = await res.json();
+        showMessage('error', data.error || '密码错误');
+      }
+    } catch {
+      showMessage('error', '验证失败，请稍后重试');
     }
   };
 
