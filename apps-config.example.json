@@ -1,0 +1,15 @@
+{
+  "dify": {
+    "baseUrl": "",
+    "siteTitle": "AI 导航中心",
+    "siteLogo": "",
+    "apiKey": ""
+  },
+  "home": {
+    "title": "你的专属智能助手中枢",
+    "subtitle": "由 Dify 驱动，汇聚多个领域智能助手，一站式访问，开箱即用",
+    "tag": "AI Assistant Hub",
+    "tagLink": ""
+  },
+  "apps": []
+}

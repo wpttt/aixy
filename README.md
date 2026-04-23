@@ -36,10 +36,12 @@ cp .env.example .env
 编辑 `.env` 文件，修改配置：
 
 ```env
-NEXT_PUBLIC_ADMIN_PASSWORD=你的密码
+ADMIN_PASSWORD=你的密码
 RAG_BASE_URL=http://localhost/v1
 RAG_API_KEY=你的API密钥
 ```
+
+> 注意：`ADMIN_PASSWORD` 是服务端环境变量，修改后重启服务生效。
 
 ### 4. 启动开发服务器
 
@@ -74,10 +76,11 @@ cd aixy
 
 ### 2. 创建配置文件
 
-复制环境变量配置文件：
+复制环境变量和应用配置文件：
 
 ```bash
 cp .env.example .env
+cp apps-config.example.json apps-config.json
 ```
 
 ### 3. 启动容器
@@ -88,7 +91,18 @@ docker-compose up -d --build
 
 ### 4. 访问应用
 
-部署成功后访问 `http://localhost:3000`
+部署成功后访问 `http://localhost:3000`（或自定义端口）
+
+### 5. 修改端口
+
+编辑 `docker-compose.yml`，修改 `ports` 左边的宿主机端口：
+
+```yaml
+services:
+  app:
+    ports:
+      - "3330:3000"   # 宿主机 3330 -> 容器内 3000
+```
 
 ### 常用命令
 
@@ -123,12 +137,15 @@ docker-compose up -d --build
 
 | 变量 | 说明 | 默认值 |
 |------|------|--------|
-| `NEXT_PUBLIC_ADMIN_PASSWORD` | 配置管理页面访问密码 | `123456` |
+| `ADMIN_PASSWORD` | 配置管理页面访问密码 | `123456` |
 | `NODE_ENV` | 运行环境 | `production` |
+| `PORT` | 容器内监听端口（固定 3000） | `3000` |
+
+> Docker 部署时，修改 `.env` 中的 `ADMIN_PASSWORD` 后执行 `docker-compose up -d --build` 重新构建生效。
 
 ### 配置管理
 
-访问 `http://localhost:3000/admin`，输入密码（默认：`123456`）进入配置页面。
+访问 `http://localhost:3000/admin`（或自定义端口），输入密码（默认：`123456`）进入配置页面。
 
 ---
 
